@@ -61,7 +61,7 @@
 						"parameters": {
 							"p_folder": "bronze",
 							"p_fileName": {
-								"value": "@pipeline().parameters.tbName[1]",
+								"value": "@{pipeline().parameters.tbName[1]}/@pipeline().parameters.tbName[1]",
 								"type": "Expression"
 							}
 						}

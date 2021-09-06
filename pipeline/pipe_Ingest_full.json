@@ -48,8 +48,24 @@
 				"type": "Array",
 				"defaultValue": [
 					[
+						"Clientes",
+						"Clientes"
+					],
+					[
 						"Fornecedores",
 						"Fornecedores"
+					],
+					[
+						"Recebimentos",
+						"Recebimentos"
+					],
+					[
+						"Produtos",
+						"Produtos"
+					],
+					[
+						"Lista Pedidos",
+						"Pedidos"
 					]
 				]
 			}
