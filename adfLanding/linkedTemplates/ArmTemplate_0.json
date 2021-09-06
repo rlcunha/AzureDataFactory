@@ -486,7 +486,7 @@
 								"type": "Expression"
 							},
 							"isSequential": false,
-							"batchCount": 1,
+							"batchCount": 3,
 							"activities": [
 								{
 									"name": "Execute Pipeline1",
@@ -522,18 +522,6 @@
 							[
 								"Fornecedores",
 								"Fornecedores"
-							],
-							[
-								"Recebimentos",
-								"Recebimentos"
-							],
-							[
-								"Produtos",
-								"Produtos"
-							],
-							[
-								"Lista Pedidos",
-								"Pedidos"
 							]
 						]
 					}
