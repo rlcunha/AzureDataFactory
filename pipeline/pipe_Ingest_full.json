@@ -48,10 +48,6 @@
 				"type": "Array",
 				"defaultValue": [
 					[
-						"Clientes",
-						"Clientes"
-					],
-					[
 						"Fornecedores",
 						"Fornecedores"
 					]
