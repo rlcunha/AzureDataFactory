@@ -26,10 +26,6 @@
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "pipe_Ingest_Generic",
-									"type": "PipelineReference"
-								},
 								"waitOnCompletion": true,
 								"parameters": {
 									"tbName": {
@@ -49,7 +45,7 @@
 				"defaultValue": [
 					[
 						"Clientes",
-						"Clientes"
+						"Clientes_broze"
 					],
 					[
 						"Fornecedores",

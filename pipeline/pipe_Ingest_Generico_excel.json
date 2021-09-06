@@ -1,0 +1,81 @@
+{
+	"name": "pipe_Ingest_Generico_excel",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingest_Generic",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_ler_excel",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@{pipeline().parameters.tbName[0]}.xlsx",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_parquet_generico",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_folder": "bronze",
+							"p_fileName": {
+								"value": "@pipeline().parameters.tbName[1]",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"tbName": {
+				"type": "array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-09-03T21:36:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
