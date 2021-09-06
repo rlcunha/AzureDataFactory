@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adfLanding"
+		},
+		"ls_adls_gestao_cafeteria_servicePrincipalCredential": {
+			"value": ""
+		},
+		"ls_azuresql_connectionString": {
+			"value": ""
+		},
+		"ls_mysql_connectionString": {
+			"value": ""
+		},
+		"ls_adls_gestao_cafeteria_properties_typeProperties_url": {
+			"value": "https://sagestaocafeteria.dfs.core.windows.net"
+		},
+		"ls_adls_gestao_cafeteria_properties_typeProperties_tenant": {
+			"value": "41449c7c-1d3f-4e16-9755-3285e7635e3a"
+		},
+		"ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId": {
+			"value": "30dbafd1-2a96-4134-b895-6657a38fd138"
+		}
+	}
+}
