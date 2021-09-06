@@ -13,6 +13,10 @@
 					}
 				],
 				"typeProperties": {
+					"items": {
+						"value": "@variables('v_tables')",
+						"type": "Expression"
+					},
 					"isSequential": false,
 					"batchCount": 1,
 					"activities": [
@@ -40,7 +44,7 @@
 			}
 		],
 		"variables": {
-			"tables": {
+			"v_tables": {
 				"type": "Array",
 				"defaultValue": [
 					[
