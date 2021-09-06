@@ -13,10 +13,6 @@
 					}
 				],
 				"typeProperties": {
-					"items": {
-						"value": "@variables('tables')",
-						"type": "Expression"
-					},
 					"isSequential": false,
 					"batchCount": 1,
 					"activities": [
