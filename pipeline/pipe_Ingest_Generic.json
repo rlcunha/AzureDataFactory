@@ -44,7 +44,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"fileName": {
-								"value": "@{pipeline().parameters.tbName}.xlsx",
+								"value": "@{pipeline().parameters.tbName[0]}.xlsx",
 								"type": "Expression"
 							}
 						}
@@ -57,7 +57,7 @@
 						"parameters": {
 							"dbName": "dbDitalia",
 							"tbName": {
-								"value": "@pipeline().parameters.tbName",
+								"value": "@pipeline().parameters.tbName[1]",
 								"type": "Expression"
 							}
 						}
@@ -67,7 +67,7 @@
 		],
 		"parameters": {
 			"tbName": {
-				"type": "string"
+				"type": "array"
 			}
 		},
 		"annotations": [],

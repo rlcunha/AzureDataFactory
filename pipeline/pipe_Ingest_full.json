@@ -47,9 +47,18 @@
 			"tables": {
 				"type": "Array",
 				"defaultValue": [
-					"Clientes",
-					"Fornecedores",
-					"Recebimentos"
+					[
+						"Clientes",
+						"Clientes"
+					],
+					[
+						"Fornecedores",
+						"Fornecedores"
+					],
+					[
+						"Recebimentos",
+						"Recebimentos"
+					]
 				]
 			}
 		},
