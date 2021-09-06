@@ -1,0 +1,22 @@
+{
+	"name": "ls_mysql",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"dbName": {
+				"type": "string",
+				"defaultValue": "dbDitalia"
+			}
+		},
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "server=192.168.99.100;port=3306;database=@{linkedService().dbName};user=root;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJmZGNjODIzYy1lYTk5LTQxZTEtODc4Yy1jYzNlZWU2NDNlMWEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ir-selfhosted-gestao-cafeteria",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

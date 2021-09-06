@@ -1,0 +1,60 @@
+{
+	"name": "pipe_Ingest_full",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [
+					{
+						"name": "tables",
+						"value": "\"CLientes\""
+					}
+				],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('tables')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 1,
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pipe_Ingest_Generic",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"tbName": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"tables": {
+				"type": "Array",
+				"defaultValue": [
+					"Clientes",
+					"Fornecedores",
+					"Recebimentos"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-09-03T22:17:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

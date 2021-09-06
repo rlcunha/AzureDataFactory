@@ -1,0 +1,9 @@
+{
+	"name": "adfLanding",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "2a0004a5-fb7a-4a19-b3b5-c72d8aca1330",
+		"tenantId": "41449c7c-1d3f-4e16-9755-3285e7635e3a"
+	}
+}

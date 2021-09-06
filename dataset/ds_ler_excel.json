@@ -1,0 +1,31 @@
+{
+	"name": "ds_ler_excel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_gestao_cafeteria",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@{dataset().fileName}.xlsx",
+					"type": "Expression"
+				},
+				"folderPath": "landing"
+			},
+			"sheetIndex": 0,
+			"range": "A2",
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
