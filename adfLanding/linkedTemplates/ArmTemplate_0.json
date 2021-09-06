@@ -152,7 +152,7 @@
 					},
 					"sheetIndex": 0,
 					"range": "A2",
-					"firstRowAsHeader": true
+					"firstRowAsHeader": false
 				},
 				"schema": []
 			},
@@ -515,10 +515,6 @@
 					"v_tables": {
 						"type": "Array",
 						"defaultValue": [
-							[
-								"Clientes",
-								"Clientes"
-							],
 							[
 								"Fornecedores",
 								"Fornecedores"

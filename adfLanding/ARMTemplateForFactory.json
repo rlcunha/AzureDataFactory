@@ -256,10 +256,6 @@
 						"type": "Array",
 						"defaultValue": [
 							[
-								"Clientes",
-								"Clientes"
-							],
-							[
 								"Fornecedores",
 								"Fornecedores"
 							]
@@ -346,7 +342,7 @@
 					},
 					"sheetIndex": 0,
 					"range": "A2",
-					"firstRowAsHeader": true
+					"firstRowAsHeader": false
 				},
 				"schema": []
 			},
