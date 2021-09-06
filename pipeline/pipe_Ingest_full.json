@@ -49,7 +49,7 @@
 				"defaultValue": [
 					[
 						"Clientes",
-						"Clientes_broze"
+						"Clientes"
 					],
 					[
 						"Fornecedores",
@@ -58,6 +58,14 @@
 					[
 						"Recebimentos",
 						"Recebimentos"
+					],
+					[
+						"Produtos",
+						"Produtos"
+					],
+					[
+						"Lista Pedidos",
+						"Pedidos"
 					]
 				]
 			}
