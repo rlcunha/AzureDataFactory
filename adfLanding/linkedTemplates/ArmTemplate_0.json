@@ -393,7 +393,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"fileName": {
-										"value": "@{pipeline().parameters.tbName[0]}",
+										"value": "@pipeline().parameters.tbName[0]",
 										"type": "Expression"
 									}
 								}
@@ -482,7 +482,7 @@
 						],
 						"typeProperties": {
 							"items": {
-								"value": "@variables('tables')",
+								"value": "@variables('v_tables')",
 								"type": "Expression"
 							},
 							"isSequential": false,
@@ -512,7 +512,7 @@
 					}
 				],
 				"variables": {
-					"tables": {
+					"v_tables": {
 						"type": "Array",
 						"defaultValue": [
 							[
