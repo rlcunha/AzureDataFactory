@@ -23,7 +23,7 @@
 			},
 			"sheetIndex": 0,
 			"range": "A2",
-			"firstRowAsHeader": false
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	},
