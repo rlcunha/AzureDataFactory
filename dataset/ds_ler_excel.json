@@ -22,8 +22,8 @@
 				},
 				"folderPath": "landing"
 			},
-			"range": "A2",
-			"firstRowAsHeader": true
+			"range": "",
+			"firstRowAsHeader": false
 		},
 		"schema": []
 	},

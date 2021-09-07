@@ -60,7 +60,7 @@
 						"referenceName": "ds_parquet_generico",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "landing",
+							"p_container": "bronze",
 							"p_folder": {
 								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 								"type": "Expression"
