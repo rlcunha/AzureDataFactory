@@ -151,8 +151,8 @@
 						},
 						"folderPath": "landing"
 					},
-					"range": "",
-					"firstRowAsHeader": true
+					"range": "A2",
+					"firstRowAsHeader": false
 				},
 				"schema": []
 			},
@@ -522,24 +522,24 @@
 						"type": "Array",
 						"defaultValue": [
 							[
-								"clientes",
+								"Clientes",
 								"clientes"
 							],
 							[
 								"Fornecedores",
-								"Fornecedores"
+								"fornecedores"
 							],
 							[
 								"Recebimentos",
-								"Recebimentos"
+								"recebimentos"
 							],
 							[
 								"Produtos",
-								"Produtos"
+								"produtos"
 							],
 							[
 								"Lista Pedidos",
-								"Pedidos"
+								"pedidos"
 							]
 						]
 					}
