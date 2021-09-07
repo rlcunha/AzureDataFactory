@@ -28,7 +28,8 @@
 				"folderPath": {
 					"value": "@dataset().p_folder",
 					"type": "Expression"
-				}
+				},
+				"fileSystem": "bronze"
 			},
 			"compressionCodec": "snappy"
 		},
