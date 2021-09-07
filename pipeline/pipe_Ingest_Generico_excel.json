@@ -65,7 +65,7 @@
 								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 								"type": "Expression"
 							},
-							"p_fileName": "file.parquet"
+							"p_fileName": "@{pipeline().parameters.tbName[1]}"
 						}
 					}
 				]
