@@ -521,8 +521,8 @@
 						"type": "Array",
 						"defaultValue": [
 							[
-								"Clientes",
-								"Clientes"
+								"clientes",
+								"clientes"
 							],
 							[
 								"Fornecedores",
