@@ -170,6 +170,9 @@
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
+					"p_container": {
+						"type": "string"
+					},
 					"p_folder": {
 						"type": "string"
 					},
@@ -350,14 +353,7 @@
 					{
 						"name": "Ingest_Generic",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Delete1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -369,18 +365,9 @@
 						"typeProperties": {
 							"source": {
 								"type": "ExcelSource",
-								"additionalColumns": [
-									{
-										"name": "dtIngestion",
-										"value": {
-											"value": "@utcnow('yyyyMMdd')",
-											"type": "Expression"
-										}
-									}
-								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
+									"recursive": false,
 									"enablePartitionDiscovery": false
 								}
 							},
@@ -421,49 +408,15 @@
 								"referenceName": "ds_parquet_generico",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_folder": "bronze",
-									"p_fileName": {
-										"value": "@{pipeline().parameters.tbName[1]}/@{pipeline().parameters.tbName[1]}",
+									"p_container": "landing",
+									"p_folder": {
+										"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 										"type": "Expression"
-									}
+									},
+									"p_fileName": "file.parquet"
 								}
 							}
 						]
-					},
-					{
-						"name": "Delete1",
-						"type": "Delete",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ds_ler_excel",
-								"type": "DatasetReference",
-								"parameters": {
-									"fileName": "@pipeline().parameters.tbName[0]"
-								}
-							},
-							"logStorageSettings": {
-								"linkedServiceName": {
-									"referenceName": "ls_adls_gestao_cafeteria",
-									"type": "LinkedServiceReference"
-								},
-								"path": "log"
-							},
-							"enableLogging": true,
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							}
-						}
 					}
 				],
 				"parameters": {
@@ -476,8 +429,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_ler_excel')]",
-				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_cafeteria')]"
+				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]"
 			]
 		},
 		{
