@@ -102,7 +102,7 @@
 						"referenceName": "ds_ler_excel",
 						"type": "DatasetReference",
 						"parameters": {
-							"fileName": "@pipeline().parameters.tbName[0]"
+							"fileName": "@pipeline().parameters.tbName[1]"
 						}
 					},
 					"logStorageSettings": {
