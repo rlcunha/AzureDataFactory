@@ -152,7 +152,7 @@
 						"folderPath": "landing"
 					},
 					"range": "",
-					"firstRowAsHeader": false
+					"firstRowAsHeader": true
 				},
 				"schema": []
 			},
