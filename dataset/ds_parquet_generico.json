@@ -6,6 +6,9 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
+			"p_container": {
+				"type": "string"
+			},
 			"p_folder": {
 				"type": "string"
 			},

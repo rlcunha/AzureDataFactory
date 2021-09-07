@@ -60,11 +60,12 @@
 						"referenceName": "ds_parquet_generico",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_folder": "bronze",
-							"p_fileName": {
-								"value": "@{pipeline().parameters.tbName[1]}/@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+							"p_container": "landing",
+							"p_folder": {
+								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 								"type": "Expression"
-							}
+							},
+							"p_fileName": "file.parquet"
 						}
 					}
 				]
