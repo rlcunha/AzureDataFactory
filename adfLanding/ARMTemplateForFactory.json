@@ -350,6 +350,7 @@
 				"annotations": [],
 				"type": "Excel",
 				"typeProperties": {
+					"sheetName": "Sheet1",
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
@@ -358,7 +359,6 @@
 						},
 						"folderPath": "landing"
 					},
-					"sheetIndex": 0,
 					"range": "A2",
 					"firstRowAsHeader": true
 				},
