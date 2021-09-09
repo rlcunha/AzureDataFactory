@@ -48,6 +48,10 @@
 				"type": "Array",
 				"defaultValue": [
 					[
+						"Contas a Pagar",
+						"contasapagar"
+					],
+					[
 						"Clientes",
 						"clientes"
 					],
