@@ -9,7 +9,7 @@
 			"p_container": {
 				"type": "string"
 			},
-			"p_folder": {
+			"p_path": {
 				"type": "string"
 			},
 			"p_fileName": {
@@ -22,11 +22,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@{dataset().p_fileName}.parquet",
+					"value": "@{dataset().p_fileName}",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().p_folder",
+					"value": "@dataset().p_path",
 					"type": "Expression"
 				},
 				"fileSystem": "bronze"

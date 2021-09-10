@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "ExcelSource",
+						"type": "ParquetSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
@@ -40,13 +40,12 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_ler_excel",
+						"referenceName": "ds_parquet_generico",
 						"type": "DatasetReference",
 						"parameters": {
-							"fileName": {
-								"value": "@{pipeline().parameters.tbName[0]}.xlsx",
-								"type": "Expression"
-							}
+							"p_container": "bronze",
+							"p_path": "clientes",
+							"p_fileName": "clientes"
 						}
 					}
 				],

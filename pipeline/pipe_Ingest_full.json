@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach1",
+				"name": "loop_grava_parquet",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [

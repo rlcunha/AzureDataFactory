@@ -61,7 +61,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"p_container": "bronze",
-							"p_folder": {
+							"p_path": {
 								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 								"type": "Expression"
 							},
