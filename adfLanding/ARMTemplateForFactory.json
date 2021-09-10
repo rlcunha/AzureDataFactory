@@ -388,7 +388,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@{dataset().p_fileName}",
+							"value": "@{dataset().p_fileName}.parquet",
 							"type": "Expression"
 						},
 						"folderPath": {
