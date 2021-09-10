@@ -80,52 +80,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_adls_parquet_gestao_cafeteria')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_cafeteria",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"container": {
-						"type": "string"
-					},
-					"folder": {
-						"type": "string"
-					},
-					"file": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().file",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().folder",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().container",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_cafeteria')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_ler_excel')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -173,7 +127,7 @@
 					"p_container": {
 						"type": "string"
 					},
-					"p_folder": {
+					"p_path": {
 						"type": "string"
 					},
 					"p_fileName": {
@@ -186,11 +140,11 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": {
-							"value": "@{dataset().p_fileName}.parquet",
+							"value": "@{dataset().p_fileName}",
 							"type": "Expression"
 						},
 						"folderPath": {
-							"value": "@dataset().p_folder",
+							"value": "@dataset().p_path",
 							"type": "Expression"
 						},
 						"fileSystem": "bronze"
@@ -283,7 +237,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "ExcelSource",
+								"type": "ParquetSource",
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
@@ -307,13 +261,12 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_ler_excel",
+								"referenceName": "ds_parquet_generico",
 								"type": "DatasetReference",
 								"parameters": {
-									"fileName": {
-										"value": "@{pipeline().parameters.tbName[0]}.xlsx",
-										"type": "Expression"
-									}
+									"p_container": "bronze",
+									"p_path": "clientes",
+									"p_fileName": "clientes"
 								}
 							}
 						],
@@ -341,7 +294,7 @@
 				"lastPublishTime": "2021-09-03T21:36:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_ler_excel')]",
+				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sqldb_ditalia')]"
 			]
 		},
@@ -410,7 +363,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"p_container": "bronze",
-									"p_folder": {
+									"p_path": {
 										"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 										"type": "Expression"
 									},
@@ -477,7 +430,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ForEach1",
+						"name": "loop_grava_parquet",
 						"type": "ForEach",
 						"dependsOn": [],
 						"userProperties": [
@@ -521,6 +474,10 @@
 					"v_tables": {
 						"type": "Array",
 						"defaultValue": [
+							[
+								"Contas a Pagar",
+								"contasapagar"
+							],
 							[
 								"Clientes",
 								"clientes"
