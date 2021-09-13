@@ -48,6 +48,10 @@
 				"type": "Array",
 				"defaultValue": [
 					[
+						"Historico_Pedidos",
+						"historicoPedido"
+					],
+					[
 						"Contas a Pagar",
 						"contasapagar"
 					],
