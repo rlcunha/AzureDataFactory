@@ -1,0 +1,9 @@
+{
+	"name": "adt-landing-pago",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a8765711-f058-467d-b3f0-8db68638269a",
+		"tenantId": "41449c7c-1d3f-4e16-9755-3285e7635e3a"
+	}
+}
