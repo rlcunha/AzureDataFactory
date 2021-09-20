@@ -2,7 +2,7 @@
 	"name": "ds_parquet_generico",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_gestao_cafeteria",
+			"referenceName": "ls_adls_gestao_bigdata",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -29,7 +29,7 @@
 					"value": "@dataset().p_path",
 					"type": "Expression"
 				},
-				"fileSystem": "bronze"
+				"fileSystem": "raw"
 			},
 			"compressionCodec": "snappy"
 		},

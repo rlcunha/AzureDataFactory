@@ -2,7 +2,7 @@
 	"name": "ds_ler_excel",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_gestao_cafeteria",
+			"referenceName": "ls_adls_gestao_bigdata",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
