@@ -74,6 +74,10 @@
 					[
 						"Lista Pedidos",
 						"pedidos"
+					],
+					[
+						"lista-de-pedidos",
+						"pedidosIfood"
 					]
 				]
 			}
