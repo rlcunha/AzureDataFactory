@@ -1,5 +1,5 @@
 {
-	"name": "pipe_Ingest_landing_00",
+	"name": "pipe_Ingest_raw",
 	"properties": {
 		"activities": [
 			{
@@ -21,7 +21,7 @@
 					"batchCount": 3,
 					"activities": [
 						{
-							"name": "exec_pipe_loop",
+							"name": "Execute Pipeline1",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
