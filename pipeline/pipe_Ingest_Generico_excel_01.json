@@ -110,11 +110,11 @@
 						"parameters": {
 							"p_container": "raw",
 							"p_path": {
-								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{pipeline().parameters.dtIngestion}",
+								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 								"type": "Expression"
 							},
 							"p_fileName": {
-								"value": "@{pipeline().parameters.tbName[1]}",
+								"value": "@{pipeline().parameters.tbName[1]}-@{pipeline().parameters.dtIngestion}",
 								"type": "Expression"
 							}
 						}

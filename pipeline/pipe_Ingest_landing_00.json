@@ -33,7 +33,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"tbName": {
-										"value": "@{item()[0]}.xlsx",
+										"value": "@item()",
 										"type": "Expression"
 									},
 									"folder": {
@@ -96,49 +96,6 @@
 			"p_dataIngestion": {
 				"type": "string",
 				"defaultValue": "20100801"
-			}
-		},
-		"variables": {
-			"v_tables": {
-				"type": "Array",
-				"defaultValue": [
-					[
-						"Historico_Pedidos",
-						"historicoPedido"
-					],
-					[
-						"Contas a Pagar",
-						"contasapagar"
-					],
-					[
-						"Clientes",
-						"clientes"
-					],
-					[
-						"Fornecedores",
-						"fornecedores"
-					],
-					[
-						"Recebimentos",
-						"recebimentos"
-					],
-					[
-						"Produtos",
-						"produtos"
-					],
-					[
-						"Lista Pedidos",
-						"pedidos"
-					],
-					[
-						"lista-de-pedidos",
-						"pedidosIfood"
-					]
-				]
-			},
-			"folder": {
-				"type": "String",
-				"defaultValue": "landing"
 			}
 		},
 		"annotations": [],
