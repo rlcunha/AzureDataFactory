@@ -133,41 +133,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_ler_excel')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@{dataset().fileName}.xlsx",
-							"type": "Expression"
-						},
-						"folderPath": "landing"
-					},
-					"sheetIndex": 0,
-					"range": "A2",
-					"firstRowAsHeader": false
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_parquet_generico')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -271,6 +236,76 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_ler_excel')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gestao_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@{dataset().fileName}.xlsx",
+							"type": "Expression"
+						},
+						"folderPath": "landing"
+					},
+					"sheetIndex": 0,
+					"range": "A2",
+					"firstRowAsHeader": false
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_ler_excel_landing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gestao_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@{dataset().fileName}.xlsx",
+							"type": "Expression"
+						},
+						"folderPath": "landing"
+					},
+					"sheetIndex": 0,
+					"range": "A2",
+					"firstRowAsHeader": false
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_Generic')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -356,7 +391,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_Generico_excel')]",
+			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_Generico_excel_01')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -404,11 +439,11 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_ler_excel",
+								"referenceName": "ds_ler_excel_landing",
 								"type": "DatasetReference",
 								"parameters": {
 									"fileName": {
-										"value": "@pipeline().parameters.tbName[0]",
+										"value": "@pipeline().parameters.tbName",
 										"type": "Expression"
 									}
 								}
@@ -419,7 +454,7 @@
 								"referenceName": "ds_parquet_generico",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_container": "bronze",
+									"p_container": "raw",
 									"p_path": {
 										"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 										"type": "Expression"
@@ -443,8 +478,8 @@
 				"lastPublishTime": "2021-09-03T21:36:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_ler_excel')]",
-				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]"
+				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
+				"[concat(variables('factoryId'), '/datasets/ds_ler_excel_landing')]"
 			]
 		},
 		{
@@ -485,7 +520,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_full')]",
+			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_raw')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -515,7 +550,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "pipe_Ingest_Generico_excel",
+											"referenceName": "pipe_Ingest_Generico_excel_01",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -566,6 +601,10 @@
 							[
 								"Lista Pedidos",
 								"pedidos"
+							],
+							[
+								"lista-de-pedidos",
+								"pedidosIfood"
 							]
 						]
 					}
@@ -574,7 +613,104 @@
 				"lastPublishTime": "2021-09-03T22:17:35Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pipe_Ingest_Generico_excel')]"
+				"[concat(variables('factoryId'), '/pipelines/pipe_Ingest_Generico_excel_01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_landing_00')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "loop_grava_parquet",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [
+							{
+								"name": "tables",
+								"value": "\"CLientes\""
+							}
+						],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('v_tables')",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 3,
+							"activities": [
+								{
+									"name": "exec_pipe_loop",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pipe_Ingest_Generico_excel_01",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"tbName": {
+												"value": "@item()",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"v_tables": {
+						"type": "Array",
+						"defaultValue": [
+							[
+								"Historico_Pedidos",
+								"historicoPedido"
+							],
+							[
+								"Contas a Pagar",
+								"contasapagar"
+							],
+							[
+								"Clientes",
+								"clientes"
+							],
+							[
+								"Fornecedores",
+								"fornecedores"
+							],
+							[
+								"Recebimentos",
+								"recebimentos"
+							],
+							[
+								"Produtos",
+								"produtos"
+							],
+							[
+								"Lista Pedidos",
+								"pedidos"
+							],
+							[
+								"lista-de-pedidos",
+								"pedidosIfood"
+							]
+						]
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2021-09-03T22:17:35Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pipe_Ingest_Generico_excel_01')]"
 			]
 		}
 	]
