@@ -33,7 +33,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"tbName": {
-										"value": "@{item()[1]}.xlsx",
+										"value": "@{item()[0]}.xlsx",
 										"type": "Expression"
 									},
 									"folder": {
