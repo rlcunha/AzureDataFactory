@@ -5,14 +5,7 @@
 			{
 				"name": "loop_grava_parquet",
 				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Set variable1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [
 					{
 						"name": "tables",
@@ -21,7 +14,7 @@
 				],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('v_tables')",
+						"value": "@pipeline().parameters.p_file_name",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -40,7 +33,11 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"tbName": {
-										"value": "@item()",
+										"value": "@pipeline().parameters.p_file_name",
+										"type": "Expression"
+									},
+									"folder": {
+										"value": "@pipeline().parameters.p_folder",
 										"type": "Expression"
 									}
 								}
@@ -48,58 +45,51 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Get Metadata1",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "ds_Excel",
-						"type": "DatasetReference",
-						"parameters": {
-							"folder": "landing",
-							"filename": "*"
-						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Get Metadata1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "v_tables",
-					"value": {
-						"value": "@activity('Get Metadata1').output",
-						"type": "Expression"
-					}
-				}
 			}
 		],
+		"parameters": {
+			"p_file_name": {
+				"type": "array",
+				"defaultValue": [
+					[
+						"Historico_Pedidos",
+						"historicoPedido"
+					],
+					[
+						"Contas a Pagar",
+						"contasapagar"
+					],
+					[
+						"Clientes",
+						"clientes"
+					],
+					[
+						"Fornecedores",
+						"fornecedores"
+					],
+					[
+						"Recebimentos",
+						"recebimentos"
+					],
+					[
+						"Produtos",
+						"produtos"
+					],
+					[
+						"Lista Pedidos",
+						"pedidos"
+					],
+					[
+						"lista-de-pedidos",
+						"pedidosIfood"
+					]
+				]
+			},
+			"p_folder": {
+				"type": "string",
+				"defaultValue": "landing"
+			}
+		},
 		"variables": {
 			"v_tables": {
 				"type": "Array",
@@ -137,6 +127,10 @@
 						"pedidosIfood"
 					]
 				]
+			},
+			"folder": {
+				"type": "String",
+				"defaultValue": "landing"
 			}
 		},
 		"annotations": [],

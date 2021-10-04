@@ -92,7 +92,10 @@
 						"referenceName": "ds_Excel",
 						"type": "DatasetReference",
 						"parameters": {
-							"folder": "landing",
+							"folder": {
+								"value": "@pipeline().parameters.folder",
+								"type": "Expression"
+							},
 							"filename": {
 								"value": "@{pipeline().parameters.tbName[0]}",
 								"type": "Expression"
@@ -106,8 +109,14 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"p_container": "raw",
-							"p_path": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
-							"p_fileName": "@{pipeline().parameters.tbName[1]}"
+							"p_path": {
+								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+								"type": "Expression"
+							},
+							"p_fileName": {
+								"value": "@{pipeline().parameters.tbName[1]}",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -116,6 +125,9 @@
 		"parameters": {
 			"tbName": {
 				"type": "array"
+			},
+			"folder": {
+				"type": "string"
 			}
 		},
 		"variables": {
