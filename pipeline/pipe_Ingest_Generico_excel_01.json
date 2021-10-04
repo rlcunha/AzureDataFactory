@@ -81,7 +81,13 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Ingest_Generic_Excel').output",
+						"type": "Expression"
+					}
+				}
 			},
 			{
 				"name": "variavel",
