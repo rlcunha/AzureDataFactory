@@ -397,7 +397,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Ingest_Generic",
+						"name": "Ingest_Generic_Excel",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -463,6 +463,45 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('Ingest_Generic_Excel').output",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Ingest_Generic_Excel",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_output",
+							"value": {
+								"value": "@activity('Ingest_Generic_Excel').output",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -472,6 +511,11 @@
 				"parameters": {
 					"tbName": {
 						"type": "array"
+					}
+				},
+				"variables": {
+					"v_output": {
+						"type": "String"
 					}
 				},
 				"annotations": [],
