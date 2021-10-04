@@ -133,6 +133,85 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_Excel')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gestao_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@{dataset().filename}.xlsx",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						}
+					},
+					"sheetIndex": 0,
+					"range": "A2",
+					"firstRowAsHeader": false
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_ninary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gestao_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					},
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@{dataset().fileName}.xlsx",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"fileSystem": "landing"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_parquet_generico')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -236,76 +315,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_ler_excel')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@{dataset().fileName}.xlsx",
-							"type": "Expression"
-						},
-						"folderPath": "landing"
-					},
-					"sheetIndex": 0,
-					"range": "A2",
-					"firstRowAsHeader": false
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_ler_excel_landing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@{dataset().fileName}.xlsx",
-							"type": "Expression"
-						},
-						"folderPath": "landing"
-					},
-					"sheetIndex": 0,
-					"range": "A2",
-					"firstRowAsHeader": false
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_Generic')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -397,7 +406,52 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Ingest_Generic_Excel",
+						"name": "Delete1",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_Excel",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder": "landing",
+									"filename": {
+										"value": "@pipeline().parameters.tbName",
+										"type": "Expression"
+									}
+								}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "ls_adls_gestao_bigdata",
+									"type": "LinkedServiceReference"
+								}
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "Copy data1",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -413,7 +467,7 @@
 								"type": "ExcelSource",
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
-									"recursive": false,
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								}
 							},
@@ -427,7 +481,6 @@
 								}
 							},
 							"enableStaging": false,
-							"validateDataConsistency": false,
 							"translator": {
 								"type": "TabularTranslator",
 								"typeConversion": true,
@@ -439,10 +492,11 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "ds_ler_excel_landing",
+								"referenceName": "ds_Excel",
 								"type": "DatasetReference",
 								"parameters": {
-									"fileName": {
+									"folder": "landing",
+									"filename": {
 										"value": "@pipeline().parameters.tbName",
 										"type": "Expression"
 									}
@@ -455,53 +509,11 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"p_container": "raw",
-									"p_path": {
-										"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
-										"type": "Expression"
-									},
+									"p_path": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
 									"p_fileName": "@{pipeline().parameters.tbName[1]}"
 								}
 							}
 						]
-					},
-					{
-						"name": "If Condition1",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Set variable1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@activity('Ingest_Generic_Excel').output",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Ingest_Generic_Excel",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "v_output",
-							"value": {
-								"value": "@activity('Ingest_Generic_Excel').output",
-								"type": "Expression"
-							}
-						}
 					}
 				],
 				"policy": {
@@ -522,8 +534,9 @@
 				"lastPublishTime": "2021-09-03T21:36:18Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_Excel')]",
 				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
-				"[concat(variables('factoryId'), '/datasets/ds_ler_excel_landing')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
 			]
 		},
 		{
@@ -561,103 +574,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_mysql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipe_Ingest_raw')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "loop_grava_parquet",
-						"type": "ForEach",
-						"dependsOn": [],
-						"userProperties": [
-							{
-								"name": "tables",
-								"value": "\"CLientes\""
-							}
-						],
-						"typeProperties": {
-							"items": {
-								"value": "@variables('v_tables')",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"batchCount": 3,
-							"activities": [
-								{
-									"name": "Execute Pipeline1",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "pipe_Ingest_Generico_excel_01",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"tbName": {
-												"value": "@item()",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"variables": {
-					"v_tables": {
-						"type": "Array",
-						"defaultValue": [
-							[
-								"Historico_Pedidos",
-								"historicoPedido"
-							],
-							[
-								"Contas a Pagar",
-								"contasapagar"
-							],
-							[
-								"Clientes",
-								"clientes"
-							],
-							[
-								"Fornecedores",
-								"fornecedores"
-							],
-							[
-								"Recebimentos",
-								"recebimentos"
-							],
-							[
-								"Produtos",
-								"produtos"
-							],
-							[
-								"Lista Pedidos",
-								"pedidos"
-							],
-							[
-								"lista-de-pedidos",
-								"pedidosIfood"
-							]
-						]
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2021-09-03T22:17:35Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pipe_Ingest_Generico_excel_01')]"
 			]
 		},
 		{
