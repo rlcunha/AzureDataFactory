@@ -75,7 +75,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "variavel",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -90,8 +90,7 @@
 				}
 			},
 			{
-				"name": "variavel",
-				"description": "",
+				"name": "Set variable1",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
