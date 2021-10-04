@@ -3,31 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Copy data1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "v_output",
-					"value": {
-						"value": "\"True\"",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Delete1",
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
