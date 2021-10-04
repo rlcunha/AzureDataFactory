@@ -38,25 +38,6 @@
 									}
 								}
 							}
-						},
-						{
-							"name": "exec_pipe_loop_copy1",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "pipe_Ingest_Generico_excel_01",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"tbName": {
-										"value": "@item()",
-										"type": "Expression"
-									}
-								}
-							}
 						}
 					]
 				}
