@@ -91,26 +91,6 @@
 				}
 			},
 			{
-				"name": "Set variable2",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Ingest_Generic_Excel",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "v_output",
-					"value": {
-						"value": "\"False\"",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Delete1",
 				"type": "Delete",
 				"dependsOn": [
