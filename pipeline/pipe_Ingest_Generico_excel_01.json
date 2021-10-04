@@ -137,6 +137,12 @@
 							"fileName": "@pipeline().parameters.tbName.*"
 						}
 					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "ls_adls_gestao_bigdata",
+							"type": "LinkedServiceReference"
+						}
+					},
 					"enableLogging": true,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
