@@ -110,7 +110,7 @@
 						"parameters": {
 							"p_container": "raw",
 							"p_path": {
-								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+								"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{pipeline().parameters.dtIngestion}",
 								"type": "Expression"
 							},
 							"p_fileName": {
@@ -128,11 +128,9 @@
 			},
 			"folder": {
 				"type": "string"
-			}
-		},
-		"variables": {
-			"v_output": {
-				"type": "String"
+			},
+			"dtIngestion": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
