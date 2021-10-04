@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Ingest_Generic",
+				"name": "Ingest_Generic_Excel",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -69,11 +69,50 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "variavel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
+			},
+			{
+				"name": "variavel",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Ingest_Generic_Excel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_output",
+					"value": {
+						"value": "@activity('Ingest_Generic_Excel').output",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
 			"tbName": {
 				"type": "array"
+			}
+		},
+		"variables": {
+			"v_output": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
