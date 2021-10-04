@@ -22,12 +22,13 @@
 					"value": "@{dataset().filename}.xlsx",
 					"type": "Expression"
 				},
-				"folderPath": {
+				"fileSystem": {
 					"value": "@dataset().folder",
 					"type": "Expression"
-				},
-				"fileSystem": "landing"
-			}
+				}
+			},
+			"range": "A2",
+			"firstRowAsHeader": false
 		},
 		"schema": []
 	}
