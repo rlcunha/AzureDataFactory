@@ -27,7 +27,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pipe_Ingest_Generico_excel",
+									"referenceName": "pipe_Ingest_Generico_excel_01",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
