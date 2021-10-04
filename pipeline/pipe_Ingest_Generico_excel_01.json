@@ -23,12 +23,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_ninary",
+						"referenceName": "ds_Excel",
 						"type": "DatasetReference",
 						"parameters": {
 							"folder": "landing",
-							"fileName": {
-								"value": "@{pipeline().parameters.tbName}.*",
+							"filename": {
+								"value": "@pipeline().parameters.tbName",
 								"type": "Expression"
 							}
 						}
