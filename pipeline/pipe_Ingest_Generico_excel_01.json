@@ -23,10 +23,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_ler_excel_landing",
+						"referenceName": "ds_ninary",
 						"type": "DatasetReference",
 						"parameters": {
-							"fileName": "@pipeline().parameters.tbName.*"
+							"folder": "landing",
+							"fileName": {
+								"value": "@{pipeline().parameters.tbName}.*",
+								"type": "Expression"
+							}
 						}
 					},
 					"logStorageSettings": {
@@ -85,10 +89,14 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_ler_excel_landing",
+						"referenceName": "ds_Excel",
 						"type": "DatasetReference",
 						"parameters": {
-							"fileName": "@{pipeline().parameters.tbName}.xlsx"
+							"folder": "landing",
+							"filename": {
+								"value": "@pipeline().parameters.tbName",
+								"type": "Expression"
+							}
 						}
 					}
 				],
