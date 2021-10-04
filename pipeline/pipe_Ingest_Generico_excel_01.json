@@ -94,7 +94,7 @@
 						"parameters": {
 							"folder": "landing",
 							"filename": {
-								"value": "@pipeline().parameters.tbName",
+								"value": "@{pipeline().parameters.tbName[0]}",
 								"type": "Expression"
 							}
 						}
