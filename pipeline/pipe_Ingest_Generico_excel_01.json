@@ -51,7 +51,7 @@
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Set variable1",
+							"name": "Erro",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"userProperties": [],
@@ -185,7 +185,7 @@
 							]
 						},
 						{
-							"name": "Set variable2",
+							"name": "Sucesso",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
