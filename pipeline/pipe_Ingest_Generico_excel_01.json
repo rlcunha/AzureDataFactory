@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('CondicaoSeExisteArquivoExcel').output.exists",
+						"value": "@activity('GetTodosArquivosExcel').output.exists\n",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
