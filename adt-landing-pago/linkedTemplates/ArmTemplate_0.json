@@ -398,7 +398,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Get Metadata1",
+						"name": "GetTodosArquivosExcel",
 						"type": "GetMetadata",
 						"dependsOn": [],
 						"policy": {
@@ -428,11 +428,11 @@
 						}
 					},
 					{
-						"name": "If Condition1",
+						"name": "CondicaoSeExisteArquivoExcel",
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "GetTodosArquivosExcel",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -441,7 +441,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@activity('Get Metadata1').output.exists",
+								"value": "@activity('GetTodosArquivosExcel').output.exists\n",
 								"type": "Expression"
 							},
 							"ifFalseActivities": [
@@ -461,11 +461,11 @@
 							],
 							"ifTrueActivities": [
 								{
-									"name": "Delete1_copy1",
+									"name": "DeleteIngestExcelLanding",
 									"type": "Delete",
 									"dependsOn": [
 										{
-											"activity": "Copy data1_copy1",
+											"activity": "CopyIngestExcelLanding",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -506,7 +506,7 @@
 									}
 								},
 								{
-									"name": "Copy data1_copy1",
+									"name": "CopyIngestExcelLanding",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -584,7 +584,7 @@
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "Delete1_copy1",
+											"activity": "DeleteIngestExcelLanding",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -673,7 +673,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "loop_grava_parquet",
+						"name": "ForEachParaCadaListaArquivo",
 						"type": "ForEach",
 						"dependsOn": [],
 						"userProperties": [
