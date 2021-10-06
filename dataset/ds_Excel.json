@@ -27,7 +27,8 @@
 					"type": "Expression"
 				}
 			},
-			"range": "A2",
+			"sheetIndex": 0,
+			"range": "",
 			"firstRowAsHeader": false
 		},
 		"schema": []
