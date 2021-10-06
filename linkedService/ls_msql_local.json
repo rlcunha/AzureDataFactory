@@ -1,0 +1,16 @@
+{
+	"name": "ls_msql_local",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "server=192.168.99.100;port=3306;database=dbControle;user=root;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJkMTliYWYzMS0wMTM0LTRiYzAtODUyZS1jZDIxYWRmMmYxZGYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "ir-selfhosted-local",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
