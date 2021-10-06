@@ -19,7 +19,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@{dataset().filename}.xlsx",
+					"value": "@{dataset().filename}",
 					"type": "Expression"
 				},
 				"fileSystem": {
@@ -27,7 +27,6 @@
 					"type": "Expression"
 				}
 			},
-			"sheetIndex": 0,
 			"range": "A2",
 			"firstRowAsHeader": false
 		},

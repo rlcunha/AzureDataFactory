@@ -194,7 +194,7 @@
 											"type": "Expression"
 										},
 										"filename": {
-											"value": "@item.name",
+											"value": "@activity('GmExcel').output.childItems.name",
 											"type": "Expression"
 										}
 									}
@@ -210,11 +210,11 @@
 											"type": "Expression"
 										},
 										"p_path": {
-											"value": "@formatDateTime(variables('v_ultima_data_modificada'),'ddMMyyyyHH:mm')",
+											"value": "@variables('v_ultima_data_modificada')",
 											"type": "Expression"
 										},
 										"p_fileName": {
-											"value": "@item().name.parquet",
+											"value": "'Clientes.parquet'",
 											"type": "Expression"
 										}
 									}
