@@ -22,7 +22,10 @@
 							"folder": "landing"
 						}
 					},
-					"fieldList": [],
+					"fieldList": [
+						"itemName",
+						"lastModified"
+					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
