@@ -53,7 +53,7 @@
 						"value": "@activity('GmExcel').output.childItems",
 						"type": "Expression"
 					},
-					"batchCount": 3,
+					"batchCount": 1,
 					"activities": [
 						{
 							"name": "loControleVersao",
@@ -194,7 +194,7 @@
 											"type": "Expression"
 										},
 										"filename": {
-											"value": "@activity('GmExcel').output.childItems.name",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -210,16 +210,36 @@
 											"type": "Expression"
 										},
 										"p_path": {
-											"value": "@variables('v_ultima_data_modificada')",
+											"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(variables('v_ultima_data_modificada'),'yyyyMMdd')}",
 											"type": "Expression"
 										},
 										"p_fileName": {
-											"value": "'Clientes.parquet'",
+											"value": "@replace(replace(item().name,'.',''),' ','')\n",
 											"type": "Expression"
 										}
 									}
 								}
 							]
+						},
+						{
+							"name": "spAtualizaVersao",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "cdCopiaArquivoParquetRaw",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
 						}
 					]
 				}
