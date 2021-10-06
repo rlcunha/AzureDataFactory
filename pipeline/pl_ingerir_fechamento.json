@@ -32,8 +32,111 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "forListaArquivos",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GmExcel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GmExcel').output.childItems",
+						"type": "Expression"
+					},
+					"batchCount": 3,
+					"activities": [
+						{
+							"name": "loControleVersao",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "MySqlSource",
+									"query": {
+										"value": "select MAX(dtUltimaMod) as dtUltimaMod from dbControle.tbControleVersao where UPPER(nomeArquivo) = '@{item().name}'",
+										"type": "Expression"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_mysql",
+									"type": "DatasetReference",
+									"parameters": {
+										"tbName": "tbControleVersao",
+										"dbName": "dbControle"
+									}
+								}
+							}
+						},
+						{
+							"name": "if_tabela_vazia",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "loControleVersao",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@empty(activity('loControleVersao').output.firstRow.dtUltimaMod)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "varCondicaoFalsa",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "v_ultima_data_modificada",
+											"value": {
+												"value": "@activity('loControleVersao').output.firstRow.dtUltimaMod",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "varCondicaoVerdadeira",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "v_ultima_data_modificada",
+											"value": "'1900-01-01 00:00'"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
 			}
 		],
+		"variables": {
+			"v_ultima_data_modificada": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
