@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Ingest_Generic",
-				"type": "Copy",
+				"name": "Lookup1",
+				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -16,52 +16,26 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "ParquetSource",
+						"type": "ExcelSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
 							"enablePartitionDiscovery": false
 						}
 					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"tableOption": "autoCreate",
-						"disableMetricsCollection": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_parquet_generico",
+					"dataset": {
+						"referenceName": "ds_Excel",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_container": "bronze",
-							"p_path": "clientes",
-							"p_fileName": "clientes"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_sqldb_ditalia",
-						"type": "DatasetReference",
-						"parameters": {
-							"dbName": "dbDitalia",
-							"tbName": {
-								"value": "@pipeline().parameters.tbName[1]",
+							"folder": {
+								"value": "landing",
 								"type": "Expression"
-							}
+							},
+							"filename": "Histórico de Caixas"
 						}
-					}
-				]
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"parameters": {

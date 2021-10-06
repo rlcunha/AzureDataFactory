@@ -1,0 +1,28 @@
+{
+	"name": "ds_Excel_Lista",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_gestao_bigdata",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				}
+			},
+			"range": "",
+			"firstRowAsHeader": false
+		},
+		"schema": []
+	}
+}
