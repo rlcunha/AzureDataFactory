@@ -19,7 +19,10 @@
 						"referenceName": "ds_Excel_Lista",
 						"type": "DatasetReference",
 						"parameters": {
-							"folder": "landing"
+							"folder": {
+								"value": "@pipeline().parameters.p_landing",
+								"type": "Expression"
+							}
 						}
 					},
 					"fieldList": [
@@ -76,8 +79,14 @@
 									"referenceName": "ds_mysql",
 									"type": "DatasetReference",
 									"parameters": {
-										"tbName": "tbControleVersao",
-										"dbName": "dbControle"
+										"tbName": {
+											"value": "@pipeline().parameters.p_tabela_controle",
+											"type": "Expression"
+										},
+										"dbName": {
+											"value": "@pipeline().parameters.p_banco_controle",
+											"type": "Expression"
+										}
 									}
 								}
 							}
@@ -101,7 +110,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "varCondicaoFalsa",
+										"name": "EncontrouDataMod",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"userProperties": [],
@@ -116,7 +125,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "varCondicaoVerdadeira",
+										"name": "NaoEncotrouDataMod",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"userProperties": [],
@@ -127,11 +136,117 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "cdCopiaArquivoParquetRaw",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "if_tabela_vazia",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_Excel",
+									"type": "DatasetReference",
+									"parameters": {
+										"folder": {
+											"value": "@pipeline().parameters.p_landing",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item.name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_parquet_generico",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_container": {
+											"value": "@pipeline().parameters.p_raw",
+											"type": "Expression"
+										},
+										"p_path": {
+											"value": "@formatDateTime(variables('v_ultima_data_modificada'),'ddMMyyyyHH:mm')",
+											"type": "Expression"
+										},
+										"p_fileName": {
+											"value": "@item().name.parquet",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
 			}
 		],
+		"parameters": {
+			"p_banco_controle": {
+				"type": "string",
+				"defaultValue": "dbControle"
+			},
+			"p_tabela_controle": {
+				"type": "string",
+				"defaultValue": "tbControleVersao"
+			},
+			"p_raw": {
+				"type": "string",
+				"defaultValue": "raw"
+			},
+			"p_trusted": {
+				"type": "string",
+				"defaultValue": "trusted"
+			},
+			"p_landing": {
+				"type": "string",
+				"defaultValue": "landing"
+			}
+		},
 		"variables": {
 			"v_ultima_data_modificada": {
 				"type": "String"
