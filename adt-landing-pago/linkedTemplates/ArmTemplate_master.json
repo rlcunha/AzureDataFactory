@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_bigdata'"
 		},
-		"ls_adls_gestao_cafeteria_servicePrincipalCredential": {
-			"type": "secureString",
-			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_cafeteria'"
-		},
 		"ls_azuresql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_azuresql'"
@@ -38,18 +34,6 @@
 		"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "b9139232-f272-4007-9ae6-307a424eb4a6"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sagestaocafeteria.dfs.core.windows.net"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_tenant": {
-			"type": "string",
-			"defaultValue": "41449c7c-1d3f-4e16-9755-3285e7635e3a"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId": {
-			"type": "string",
-			"defaultValue": "30dbafd1-2a96-4134-b895-6657a38fd138"
 		},
 		"containerUri": {
 			"type": "string",
@@ -81,9 +65,6 @@
 					"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 						"value": "[parameters('ls_adls_gestao_bigdata_servicePrincipalCredential')]"
 					},
-					"ls_adls_gestao_cafeteria_servicePrincipalCredential": {
-						"value": "[parameters('ls_adls_gestao_cafeteria_servicePrincipalCredential')]"
-					},
 					"ls_azuresql_connectionString": {
 						"value": "[parameters('ls_azuresql_connectionString')]"
 					},
@@ -101,15 +82,6 @@
 					},
 					"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId')]"
-					},
-					"ls_adls_gestao_cafeteria_properties_typeProperties_url": {
-						"value": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_url')]"
-					},
-					"ls_adls_gestao_cafeteria_properties_typeProperties_tenant": {
-						"value": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_tenant')]"
-					},
-					"ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId": {
-						"value": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId')]"
 					}
 				}
 			},

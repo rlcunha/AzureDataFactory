@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_bigdata'"
 		},
-		"ls_adls_gestao_cafeteria_servicePrincipalCredential": {
-			"type": "secureString",
-			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_cafeteria'"
-		},
 		"ls_azuresql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_azuresql'"
@@ -38,18 +34,6 @@
 		"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "b9139232-f272-4007-9ae6-307a424eb4a6"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sagestaocafeteria.dfs.core.windows.net"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_tenant": {
-			"type": "string",
-			"defaultValue": "41449c7c-1d3f-4e16-9755-3285e7635e3a"
-		},
-		"ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId": {
-			"type": "string",
-			"defaultValue": "30dbafd1-2a96-4134-b895-6657a38fd138"
 		}
 	},
 	"variables": {
@@ -63,8 +47,8 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Ingest_Generic",
-						"type": "Copy",
+						"name": "Lookup1",
+						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
@@ -76,52 +60,26 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "ParquetSource",
+								"type": "ExcelSource",
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
 									"enablePartitionDiscovery": false
 								}
 							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"tableOption": "autoCreate",
-								"disableMetricsCollection": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_parquet_generico",
+							"dataset": {
+								"referenceName": "ds_Excel",
 								"type": "DatasetReference",
 								"parameters": {
-									"p_container": "bronze",
-									"p_path": "clientes",
-									"p_fileName": "clientes"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sqldb_ditalia",
-								"type": "DatasetReference",
-								"parameters": {
-									"dbName": "dbDitalia",
-									"tbName": {
-										"value": "@pipeline().parameters.tbName[1]",
+									"folder": {
+										"value": "landing",
 										"type": "Expression"
-									}
+									},
+									"filename": "Histórico de Caixas"
 								}
-							}
-						]
+							},
+							"firstRowOnly": false
+						}
 					}
 				],
 				"policy": {
@@ -137,8 +95,7 @@
 				"lastPublishTime": "2021-09-03T21:36:18Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
-				"[concat(variables('factoryId'), '/datasets/ds_sqldb_ditalia')]"
+				"[concat(variables('factoryId'), '/datasets/ds_Excel')]"
 			]
 		},
 		{
@@ -712,26 +669,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_adls_gestao_cafeteria')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_url')]",
-					"tenant": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_tenant')]",
-					"servicePrincipalId": "[parameters('ls_adls_gestao_cafeteria_properties_typeProperties_servicePrincipalId')]",
-					"servicePrincipalCredentialType": "ServicePrincipalKey",
-					"servicePrincipalCredential": {
-						"type": "SecureString",
-						"value": "[parameters('ls_adls_gestao_cafeteria_servicePrincipalCredential')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ls_azuresql')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -761,16 +698,98 @@
 					"connectionString": "[parameters('ls_mysql_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "ir-selfhosted-gestao-cafeteria",
+					"referenceName": "ir-selfhosted-local",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/ir-selfhosted-gestao-cafeteria')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/ir-selfhosted-local')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ir-selfhosted-gestao-cafeteria')]",
+			"name": "[concat(parameters('factoryName'), '/pl_ingerir_fechamento')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GmExcel",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_Excel_Lista",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder": "landing"
+								}
+							},
+							"fieldList": [
+								"itemName",
+								"lastModified",
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_Excel_Lista')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Excel_Lista')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gestao_bigdata",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						}
+					},
+					"sheetIndex": 0,
+					"range": "",
+					"firstRowAsHeader": false
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ir-selfhosted-local')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
