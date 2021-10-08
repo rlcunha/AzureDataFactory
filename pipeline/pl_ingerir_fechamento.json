@@ -299,7 +299,8 @@
 									"linkedServiceName": {
 										"referenceName": "ls_adls_gestao_bigdata",
 										"type": "LinkedServiceReference"
-									}
+									},
+									"path": "log"
 								},
 								"enableLogging": true,
 								"storeSettings": {
