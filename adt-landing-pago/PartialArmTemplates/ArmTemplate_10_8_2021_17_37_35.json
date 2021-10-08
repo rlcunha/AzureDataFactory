@@ -1,0 +1,401 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adt-landing-pago"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_ingerir_fechamento')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GmExcel",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_Excel_Lista",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder": {
+										"value": "@pipeline().parameters.p_landing",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"itemName",
+								"lastModified",
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "forListaArquivos",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GmExcel",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GmExcel').output.childItems",
+								"type": "Expression"
+							},
+							"batchCount": 3,
+							"activities": [
+								{
+									"name": "loControleVersao",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "select max(dtIngestao) as dtUltimaMod from dbControle..ControleVersao where nomeArquivo = '@{item().name}'",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ds_sql_controle",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_banco_dados": "dbControle",
+												"p_tabela": "ControleVersao"
+											}
+										}
+									}
+								},
+								{
+									"name": "if_tabela_vazia",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "loControleVersao",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@empty(activity('loControleVersao').output.firstRow.dtUltimaMod)",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "EncontrouDataMod",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "v_ultima_data_modificada",
+													"value": {
+														"value": "@activity('loControleVersao').output.firstRow.dtUltimaMod",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "NaoEncotrouDataMod",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "v_ultima_data_modificada",
+													"value": {
+														"value": "2021-10-08T00:00:00.000Z",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "ingerirArquivoParquetRaw",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "if_tabela_vazia",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ExcelSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Excel",
+											"type": "DatasetReference",
+											"parameters": {
+												"folder": {
+													"value": "@pipeline().parameters.p_landing",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_parquet_generico",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_container": {
+													"value": "@pipeline().parameters.p_raw",
+													"type": "Expression"
+												},
+												"p_path": {
+													"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(utcnow(),'yyyyMMdd')}",
+													"type": "Expression"
+												},
+												"p_fileName": {
+													"value": "@replace(replace(item().name,'.',''),' ','')\n",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Stored procedure1",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "ingerirArquivoParquetRaw",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[Proc_Controle_Versao]",
+										"storedProcedureParameters": {
+											"nomeArquivo": {
+												"value": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"dtUltimaMod": {
+												"value": {
+													"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
+													"type": "Expression"
+												},
+												"type": "Datetime"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_sql_db_azure",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "DeleteIngestExcelLanding",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Stored procedure1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_Excel",
+											"type": "DatasetReference",
+											"parameters": {
+												"folder": "landing",
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										},
+										"logStorageSettings": {
+											"linkedServiceName": {
+												"referenceName": "ls_adls_gestao_bigdata",
+												"type": "LinkedServiceReference"
+											},
+											"path": "log"
+										},
+										"enableLogging": true,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"p_banco_controle": {
+						"type": "string",
+						"defaultValue": "dbControle"
+					},
+					"p_tabela_controle": {
+						"type": "string",
+						"defaultValue": "ControleVersao"
+					},
+					"p_raw": {
+						"type": "string",
+						"defaultValue": "raw"
+					},
+					"p_trusted": {
+						"type": "string",
+						"defaultValue": "trusted"
+					},
+					"p_landing": {
+						"type": "string",
+						"defaultValue": "landing"
+					}
+				},
+				"variables": {
+					"v_ultima_data_modificada": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_landing')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_ingerir_fechamento",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"p_banco_controle": "dbControle",
+							"p_tabela_controle": "ControleVersao",
+							"p_raw": "raw",
+							"p_trusted": "trusted",
+							"p_landing": "landing"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/landing/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingerir_fechamento')]"
+			]
+		}
+	]
+}

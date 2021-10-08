@@ -46,6 +46,30 @@
 		"ls_akv_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://akv-mibitech.vault.azure.net/"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle": {
+			"type": "string",
+			"defaultValue": "dbControle"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle": {
+			"type": "string",
+			"defaultValue": "ControleVersao"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
+			"type": "string",
+			"defaultValue": "raw"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
+			"type": "string",
+			"defaultValue": "trusted"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
+			"type": "string",
+			"defaultValue": "landing"
+		},
+		"tr_landing_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja"
 		}
 	},
 	"variables": {
@@ -520,7 +544,7 @@
 								"value": "@activity('GmExcel').output.childItems",
 								"type": "Expression"
 							},
-							"batchCount": 1,
+							"batchCount": 3,
 							"activities": [
 								{
 									"name": "loControleVersao",
@@ -765,7 +789,8 @@
 											"linkedServiceName": {
 												"referenceName": "ls_adls_gestao_bigdata",
 												"type": "LinkedServiceReference"
-											}
+											},
+											"path": "log"
 										},
 										"enableLogging": true,
 										"storeSettings": {
@@ -1244,6 +1269,42 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_landing')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_ingerir_fechamento",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"p_banco_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle')]",
+							"p_tabela_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle')]",
+							"p_raw": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw')]",
+							"p_trusted": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted')]",
+							"p_landing": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/landing/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('tr_landing_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingerir_fechamento')]"
 			]
 		}
 	]

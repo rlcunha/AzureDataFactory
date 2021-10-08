@@ -47,6 +47,30 @@
 			"type": "string",
 			"defaultValue": "https://akv-mibitech.vault.azure.net/"
 		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle": {
+			"type": "string",
+			"defaultValue": "dbControle"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle": {
+			"type": "string",
+			"defaultValue": "ControleVersao"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
+			"type": "string",
+			"defaultValue": "raw"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
+			"type": "string",
+			"defaultValue": "trusted"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
+			"type": "string",
+			"defaultValue": "landing"
+		},
+		"tr_landing_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -107,6 +131,44 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "adt-landing-pago_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle": {
+						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle')]"
+					},
+					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle": {
+						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle')]"
+					},
+					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
+						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw')]"
+					},
+					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
+						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted')]"
+					},
+					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
+						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing')]"
+					},
+					"tr_landing_properties_typeProperties_scope": {
+						"value": "[parameters('tr_landing_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adt-landing-pago_ArmTemplate_0')]"
+			]
 		}
 	]
 }

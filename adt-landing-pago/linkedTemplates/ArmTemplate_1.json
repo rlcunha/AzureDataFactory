@@ -1,0 +1,74 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adt-landing-pago"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle": {
+			"type": "string",
+			"defaultValue": "dbControle"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle": {
+			"type": "string",
+			"defaultValue": "ControleVersao"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
+			"type": "string",
+			"defaultValue": "raw"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
+			"type": "string",
+			"defaultValue": "trusted"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
+			"type": "string",
+			"defaultValue": "landing"
+		},
+		"tr_landing_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_landing')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_ingerir_fechamento",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"p_banco_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle')]",
+							"p_tabela_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle')]",
+							"p_raw": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw')]",
+							"p_trusted": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted')]",
+							"p_landing": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/landing/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('tr_landing_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

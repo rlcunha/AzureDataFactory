@@ -35,6 +35,24 @@
 		"ls_akv_properties_typeProperties_baseUrl": {
 			"value": "https://akv-mibitech.vault.azure.net/"
 		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle": {
+			"value": "dbControle"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle": {
+			"value": "ControleVersao"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
+			"value": "raw"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
+			"value": "trusted"
+		},
+		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
+			"value": "landing"
+		},
+		"tr_landing_properties_typeProperties_scope": {
+			"value": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja"
+		},
 		"containerUri": {
 			"value": ""
 		},

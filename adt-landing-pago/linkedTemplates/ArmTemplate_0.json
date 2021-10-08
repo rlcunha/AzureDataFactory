@@ -945,7 +945,7 @@
 								"value": "@activity('GmExcel').output.childItems",
 								"type": "Expression"
 							},
-							"batchCount": 1,
+							"batchCount": 3,
 							"activities": [
 								{
 									"name": "loControleVersao",
@@ -1190,7 +1190,8 @@
 											"linkedServiceName": {
 												"referenceName": "ls_adls_gestao_bigdata",
 												"type": "LinkedServiceReference"
-											}
+											},
+											"path": "log"
 										},
 										"enableLogging": true,
 										"storeSettings": {
