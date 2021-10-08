@@ -222,7 +222,7 @@
 							]
 						},
 						{
-							"name": "Stored procedure1",
+							"name": "Stored procedure",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
@@ -269,7 +269,7 @@
 							"type": "Delete",
 							"dependsOn": [
 								{
-									"activity": "Stored procedure1",
+									"activity": "Stored procedure",
 									"dependencyConditions": [
 										"Succeeded"
 									]
