@@ -1,0 +1,18 @@
+{
+	"name": "ls_sql_db_azure",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=server-mibitech.database.windows.net;Initial Catalog=dbControle;User ID=Ricardo",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_akv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "pwd-sql-db"
+			}
+		}
+	}
+}
