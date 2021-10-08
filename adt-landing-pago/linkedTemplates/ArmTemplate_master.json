@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_azuresql'"
 		},
+		"ls_msql_local_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_msql_local'"
+		},
 		"ls_mysql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_mysql'"
@@ -34,6 +38,10 @@
 		"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "b9139232-f272-4007-9ae6-307a424eb4a6"
+		},
+		"ls_akv_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://akv-mibitech.vault.azure.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -68,6 +76,9 @@
 					"ls_azuresql_connectionString": {
 						"value": "[parameters('ls_azuresql_connectionString')]"
 					},
+					"ls_msql_local_connectionString": {
+						"value": "[parameters('ls_msql_local_connectionString')]"
+					},
 					"ls_mysql_connectionString": {
 						"value": "[parameters('ls_mysql_connectionString')]"
 					},
@@ -82,6 +93,9 @@
 					},
 					"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId')]"
+					},
+					"ls_akv_properties_typeProperties_baseUrl": {
+						"value": "[parameters('ls_akv_properties_typeProperties_baseUrl')]"
 					}
 				}
 			},

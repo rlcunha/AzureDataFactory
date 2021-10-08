@@ -11,6 +11,9 @@
 		"ls_azuresql_connectionString": {
 			"value": ""
 		},
+		"ls_msql_local_connectionString": {
+			"value": ""
+		},
 		"ls_mysql_connectionString": {
 			"value": ""
 		},
@@ -25,6 +28,9 @@
 		},
 		"ls_adls_gestao_bigdata_properties_typeProperties_servicePrincipalId": {
 			"value": "b9139232-f272-4007-9ae6-307a424eb4a6"
+		},
+		"ls_akv_properties_typeProperties_baseUrl": {
+			"value": "https://akv-mibitech.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""
