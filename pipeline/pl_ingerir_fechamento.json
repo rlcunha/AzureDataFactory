@@ -54,7 +54,8 @@
 						"value": "@activity('GmExcel').output.childItems",
 						"type": "Expression"
 					},
-					"batchCount": 3,
+					"isSequential": false,
+					"batchCount": 1,
 					"activities": [
 						{
 							"name": "loControleVersao",
@@ -243,19 +244,19 @@
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[Proc_Controle_Versao]",
 								"storedProcedureParameters": {
+									"dtUltimaMod": {
+										"value": {
+											"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
 									"nomeArquivo": {
 										"value": {
 											"value": "@item().name",
 											"type": "Expression"
 										},
 										"type": "String"
-									},
-									"dtUltimaMod": {
-										"value": {
-											"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
-											"type": "Expression"
-										},
-										"type": "Datetime"
 									}
 								}
 							},
