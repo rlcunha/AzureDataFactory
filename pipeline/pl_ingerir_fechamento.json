@@ -76,7 +76,7 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "ds_mysql",
+									"referenceName": "ds_mysql_local",
 									"type": "DatasetReference",
 									"parameters": {
 										"tbName": {
@@ -222,8 +222,8 @@
 							]
 						},
 						{
-							"name": "spAtualizaVersao",
-							"type": "SqlServerStoredProcedure",
+							"name": "Copy data1",
+							"type": "Copy",
 							"dependsOn": [
 								{
 									"activity": "cdCopiaArquivoParquetRaw",
@@ -239,7 +239,70 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "MySqlSource",
+									"query": {
+										"value": "exec(call atualizar_controle_versao('Clientes.xlsx','20211006'))",
+										"type": "Expression"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_mysql_local",
+									"type": "DatasetReference",
+									"parameters": {
+										"tbName": {
+											"value": "@pipeline().parameters.p_tabela_controle",
+											"type": "Expression"
+										},
+										"dbName": {
+											"value": "@pipeline().parameters.p_banco_controle",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_parquet_generico",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_container": {
+											"value": "@pipeline().parameters.p_raw",
+											"type": "Expression"
+										},
+										"p_path": {
+											"value": "@pipeline().parameters.p_banco_controle",
+											"type": "Expression"
+										},
+										"p_fileName": {
+											"value": "@replace(replace(item().name,'.',''),' ','')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					]
 				}
