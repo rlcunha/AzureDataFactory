@@ -72,7 +72,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "select max(dtUltimaMod) as dtUltimaMod from dbControle..ControleVersao where nomeArquivo = '@{item().name}'",
+										"value": "select max(dtIngestao) as dtUltimaMod from dbControle..ControleVersao where nomeArquivo = '@{item().name}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -210,7 +210,7 @@
 											"type": "Expression"
 										},
 										"p_path": {
-											"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(variables('v_ultima_data_modificada'),'yyyyMMdd')}",
+											"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(utcnow(),'yyyyMMdd')}",
 											"type": "Expression"
 										},
 										"p_fileName": {
