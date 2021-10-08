@@ -32,6 +32,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					}
 				}
@@ -69,24 +70,20 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "MySqlSource",
-									"query": {
-										"value": "select MAX(dtUltimaMod) as dtUltimaMod from dbControle.tbControleVersao where UPPER(nomeArquivo) = '@{item().name}'",
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "select max(dtUltimaMod) as dtUltimaMod from dbControle..ControleVersao where nomeArquivo = '@{item().name}'",
 										"type": "Expression"
-									}
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"dataset": {
-									"referenceName": "ds_mysql_local",
+									"referenceName": "ds_sql_controle",
 									"type": "DatasetReference",
 									"parameters": {
-										"tbName": {
-											"value": "@pipeline().parameters.p_tabela_controle",
-											"type": "Expression"
-										},
-										"dbName": {
-											"value": "@pipeline().parameters.p_banco_controle",
-											"type": "Expression"
-										}
+										"p_banco_dados": "dbControle",
+										"p_tabela": "ControleVersao"
 									}
 								}
 							}
@@ -131,7 +128,10 @@
 										"userProperties": [],
 										"typeProperties": {
 											"variableName": "v_ultima_data_modificada",
-											"value": "'1900-01-01 00:00'"
+											"value": {
+												"value": "1900-01-01T00:00:00.000Z",
+												"type": "Expression"
+											}
 										}
 									}
 								]
@@ -222,8 +222,8 @@
 							]
 						},
 						{
-							"name": "Copy data1",
-							"type": "Copy",
+							"name": "Stored procedure1",
+							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
 									"activity": "cdCopiaArquivoParquetRaw",
@@ -241,68 +241,28 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "MySqlSource",
-									"query": {
-										"value": "exec(call atualizar_controle_versao('Clientes.xlsx','20211006'))",
-										"type": "Expression"
-									}
-								},
-								"sink": {
-									"type": "ParquetSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+								"storedProcedureName": "[dbo].[Proc_Controle_Versao]",
+								"storedProcedureParameters": {
+									"nomeArquivo": {
+										"value": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"type": "String"
 									},
-									"formatSettings": {
-										"type": "ParquetWriteSettings"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
+									"dtUltimaMod": {
+										"value": {
+											"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
+											"type": "Expression"
+										},
+										"type": "Datetime"
 									}
 								}
 							},
-							"inputs": [
-								{
-									"referenceName": "ds_mysql_local",
-									"type": "DatasetReference",
-									"parameters": {
-										"tbName": {
-											"value": "@pipeline().parameters.p_tabela_controle",
-											"type": "Expression"
-										},
-										"dbName": {
-											"value": "@pipeline().parameters.p_banco_controle",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "ds_parquet_generico",
-									"type": "DatasetReference",
-									"parameters": {
-										"p_container": {
-											"value": "@pipeline().parameters.p_raw",
-											"type": "Expression"
-										},
-										"p_path": {
-											"value": "@pipeline().parameters.p_banco_controle",
-											"type": "Expression"
-										},
-										"p_fileName": {
-											"value": "@replace(replace(item().name,'.',''),' ','')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+							"linkedServiceName": {
+								"referenceName": "ls_sql_db_azure",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
@@ -315,7 +275,7 @@
 			},
 			"p_tabela_controle": {
 				"type": "string",
-				"defaultValue": "tbControleVersao"
+				"defaultValue": "ControleVersao"
 			},
 			"p_raw": {
 				"type": "string",
