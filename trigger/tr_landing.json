@@ -1,0 +1,31 @@
+{
+	"name": "tr_landing",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ingerir_fechamento",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"p_banco_controle": "dbControle",
+					"p_tabela_controle": "ControleVersao",
+					"p_raw": "raw",
+					"p_trusted": "trusted",
+					"p_landing": "landing"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/landing/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/e63e4e78-7bcc-4a13-b746-41dc90a24486/resourceGroups/rg-work-bigdata/providers/Microsoft.Storage/storageAccounts/sagestaoloja",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
