@@ -129,7 +129,7 @@
 										"typeProperties": {
 											"variableName": "v_ultima_data_modificada",
 											"value": {
-												"value": "1900-01-01T00:00:00.000Z",
+												"value": "2021-10-08T00:00:00.000Z",
 												"type": "Expression"
 											}
 										}
@@ -138,7 +138,7 @@
 							}
 						},
 						{
-							"name": "cdCopiaArquivoParquetRaw",
+							"name": "ingerirArquivoParquetRaw",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -226,7 +226,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "cdCopiaArquivoParquetRaw",
+									"activity": "ingerirArquivoParquetRaw",
 									"dependencyConditions": [
 										"Succeeded"
 									]
