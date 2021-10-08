@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_mysql'"
 		},
+		"ls_sql_db_azure_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_sql_db_azure'"
+		},
 		"lsSnowFlake_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'lsSnowFlake'"
@@ -81,6 +85,9 @@
 					},
 					"ls_mysql_connectionString": {
 						"value": "[parameters('ls_mysql_connectionString')]"
+					},
+					"ls_sql_db_azure_connectionString": {
+						"value": "[parameters('ls_sql_db_azure_connectionString')]"
 					},
 					"lsSnowFlake_connectionString": {
 						"value": "[parameters('lsSnowFlake_connectionString')]"

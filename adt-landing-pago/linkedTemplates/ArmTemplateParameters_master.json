@@ -17,6 +17,9 @@
 		"ls_mysql_connectionString": {
 			"value": ""
 		},
+		"ls_sql_db_azure_connectionString": {
+			"value": ""
+		},
 		"lsSnowFlake_connectionString": {
 			"value": ""
 		},
