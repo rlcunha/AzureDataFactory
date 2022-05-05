@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adt-landing-pago"
 		},
+		"linkedService1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'linkedService1'"
+		},
 		"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_bigdata'"
@@ -26,6 +30,10 @@
 		"ls_sql_db_azure_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_sql_db_azure'"
+		},
+		"linkedService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sagestaoloja.dfs.core.windows.net"
 		},
 		"lsSnowFlake_connectionString": {
 			"type": "secureString",
@@ -58,10 +66,6 @@
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
 			"type": "string",
 			"defaultValue": "raw"
-		},
-		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
-			"type": "string",
-			"defaultValue": "trusted"
 		},
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
 			"type": "string",
@@ -98,6 +102,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"linkedService1_accountKey": {
+						"value": "[parameters('linkedService1_accountKey')]"
+					},
 					"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 						"value": "[parameters('ls_adls_gestao_bigdata_servicePrincipalCredential')]"
 					},
@@ -112,6 +119,9 @@
 					},
 					"ls_sql_db_azure_connectionString": {
 						"value": "[parameters('ls_sql_db_azure_connectionString')]"
+					},
+					"linkedService1_properties_typeProperties_url": {
+						"value": "[parameters('linkedService1_properties_typeProperties_url')]"
 					},
 					"lsSnowFlake_connectionString": {
 						"value": "[parameters('lsSnowFlake_connectionString')]"
@@ -154,9 +164,6 @@
 					},
 					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
 						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw')]"
-					},
-					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
-						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted')]"
 					},
 					"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
 						"value": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing')]"

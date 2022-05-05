@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adt-landing-pago"
 		},
+		"linkedService1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'linkedService1'"
+		},
 		"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_bigdata'"
@@ -26,6 +30,10 @@
 		"ls_sql_db_azure_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_sql_db_azure'"
+		},
+		"linkedService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sagestaoloja.dfs.core.windows.net"
 		},
 		"lsSnowFlake_connectionString": {
 			"type": "secureString",
@@ -58,10 +66,6 @@
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
 			"type": "string",
 			"defaultValue": "raw"
-		},
-		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
-			"type": "string",
-			"defaultValue": "trusted"
 		},
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
 			"type": "string",
@@ -312,7 +316,7 @@
 											"parameters": {
 												"p_container": "raw",
 												"p_path": {
-													"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+													"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{pipeline().parameters.dtIngestion}",
 													"type": "Expression"
 												},
 												"p_fileName": {
@@ -356,7 +360,8 @@
 						"type": "string"
 					},
 					"dtIngestion": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "20211130"
 					}
 				},
 				"variables": {
@@ -544,7 +549,8 @@
 								"value": "@activity('GmExcel').output.childItems",
 								"type": "Expression"
 							},
-							"batchCount": 3,
+							"isSequential": false,
+							"batchCount": 1,
 							"activities": [
 								{
 									"name": "loControleVersao",
@@ -700,7 +706,7 @@
 													"type": "Expression"
 												},
 												"p_path": {
-													"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(utcnow(),'yyyyMMdd')}",
+													"value": "@{replace(item().name,' ','')}/dtIngestao=@{pipeline().parameters.p_fechamento}",
 													"type": "Expression"
 												},
 												"p_fileName": {
@@ -733,6 +739,13 @@
 									"typeProperties": {
 										"storedProcedureName": "[[dbo].[Proc_Controle_Versao]",
 										"storedProcedureParameters": {
+											"dtUltimaMod": {
+												"value": {
+													"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
 											"nomeArquivo": {
 												"value": {
 													"value": "@item().name",
@@ -740,12 +753,12 @@
 												},
 												"type": "String"
 											},
-											"dtUltimaMod": {
+											"dtFechamento": {
 												"value": {
-													"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
+													"value": "@pipeline().parameters.p_fechamento",
 													"type": "Expression"
 												},
-												"type": "Datetime"
+												"type": "String"
 											}
 										}
 									},
@@ -821,13 +834,13 @@
 						"type": "string",
 						"defaultValue": "raw"
 					},
-					"p_trusted": {
-						"type": "string",
-						"defaultValue": "trusted"
-					},
 					"p_landing": {
 						"type": "string",
 						"defaultValue": "landing"
+					},
+					"p_fechamento": {
+						"type": "string",
+						"defaultValue": "20211101"
 					}
 				},
 				"variables": {
@@ -903,7 +916,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -935,7 +948,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -944,7 +957,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -964,12 +977,13 @@
 					},
 					"sheetIndex": 0,
 					"range": "",
-					"firstRowAsHeader": false
+					"firstRowAsHeader": false,
+					"nullValue": "root"
 				},
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -1015,7 +1029,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -1049,7 +1063,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -1134,6 +1148,23 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_db_azure')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('linkedService1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('linkedService1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/lsSnowFlake')]",
@@ -1278,7 +1309,6 @@
 							"p_banco_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_banco_controle')]",
 							"p_tabela_controle": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_tabela_controle')]",
 							"p_raw": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw')]",
-							"p_trusted": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted')]",
 							"p_landing": "[parameters('tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing')]"
 						}
 					}

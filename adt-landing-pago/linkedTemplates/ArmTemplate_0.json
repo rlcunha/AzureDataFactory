@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adt-landing-pago"
 		},
+		"linkedService1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'linkedService1'"
+		},
 		"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'ls_adls_gestao_bigdata'"
@@ -26,6 +30,10 @@
 		"ls_sql_db_azure_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_sql_db_azure'"
+		},
+		"linkedService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sagestaoloja.dfs.core.windows.net"
 		},
 		"lsSnowFlake_connectionString": {
 			"type": "secureString",
@@ -52,6 +60,23 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('linkedService1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('linkedService1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/lsSnowFlake')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -178,7 +203,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -210,7 +235,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -219,7 +244,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -239,12 +264,13 @@
 					},
 					"sheetIndex": 0,
 					"range": "",
-					"firstRowAsHeader": false
+					"firstRowAsHeader": false,
+					"nullValue": "root"
 				},
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -253,7 +279,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_adls_gestao_bigdata",
+					"referenceName": "linkedService1",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -287,7 +313,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
+				"[concat(variables('factoryId'), '/linkedServices/linkedService1')]"
 			]
 		},
 		{
@@ -630,7 +656,7 @@
 											"parameters": {
 												"p_container": "raw",
 												"p_path": {
-													"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+													"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{pipeline().parameters.dtIngestion}",
 													"type": "Expression"
 												},
 												"p_fileName": {
@@ -674,7 +700,8 @@
 						"type": "string"
 					},
 					"dtIngestion": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "20211130"
 					}
 				},
 				"variables": {
@@ -885,366 +912,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pipe_Ingest_Generico_excel_01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_ingerir_fechamento')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GmExcel",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ds_Excel_Lista",
-								"type": "DatasetReference",
-								"parameters": {
-									"folder": {
-										"value": "@pipeline().parameters.p_landing",
-										"type": "Expression"
-									}
-								}
-							},
-							"fieldList": [
-								"itemName",
-								"lastModified",
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							}
-						}
-					},
-					{
-						"name": "forListaArquivos",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GmExcel",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GmExcel').output.childItems",
-								"type": "Expression"
-							},
-							"batchCount": 3,
-							"activities": [
-								{
-									"name": "loControleVersao",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzureSqlSource",
-											"sqlReaderQuery": {
-												"value": "select max(dtIngestao) as dtUltimaMod from dbControle..ControleVersao where nomeArquivo = '@{item().name}'",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"dataset": {
-											"referenceName": "ds_sql_controle",
-											"type": "DatasetReference",
-											"parameters": {
-												"p_banco_dados": "dbControle",
-												"p_tabela": "ControleVersao"
-											}
-										}
-									}
-								},
-								{
-									"name": "if_tabela_vazia",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "loControleVersao",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@empty(activity('loControleVersao').output.firstRow.dtUltimaMod)",
-											"type": "Expression"
-										},
-										"ifFalseActivities": [
-											{
-												"name": "EncontrouDataMod",
-												"type": "SetVariable",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "v_ultima_data_modificada",
-													"value": {
-														"value": "@activity('loControleVersao').output.firstRow.dtUltimaMod",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"ifTrueActivities": [
-											{
-												"name": "NaoEncotrouDataMod",
-												"type": "SetVariable",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "v_ultima_data_modificada",
-													"value": {
-														"value": "2021-10-08T00:00:00.000Z",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "ingerirArquivoParquetRaw",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "if_tabela_vazia",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "ExcelSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											}
-										},
-										"sink": {
-											"type": "ParquetSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "ParquetWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_Excel",
-											"type": "DatasetReference",
-											"parameters": {
-												"folder": {
-													"value": "@pipeline().parameters.p_landing",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ds_parquet_generico",
-											"type": "DatasetReference",
-											"parameters": {
-												"p_container": {
-													"value": "@pipeline().parameters.p_raw",
-													"type": "Expression"
-												},
-												"p_path": {
-													"value": "@{replace(item().name,' ','')}/dtIngestao=@{formatDateTime(utcnow(),'yyyyMMdd')}",
-													"type": "Expression"
-												},
-												"p_fileName": {
-													"value": "@replace(replace(item().name,'.',''),' ','')\n",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Stored procedure",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [
-										{
-											"activity": "ingerirArquivoParquetRaw",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[Proc_Controle_Versao]",
-										"storedProcedureParameters": {
-											"nomeArquivo": {
-												"value": {
-													"value": "@item().name",
-													"type": "Expression"
-												},
-												"type": "String"
-											},
-											"dtUltimaMod": {
-												"value": {
-													"value": "@formatDateTime(variables('v_ultima_data_modificada'),'yyyy-MM-ddTHH:mm:ss')",
-													"type": "Expression"
-												},
-												"type": "Datetime"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "ls_sql_db_azure",
-										"type": "LinkedServiceReference"
-									}
-								},
-								{
-									"name": "DeleteIngestExcelLanding",
-									"type": "Delete",
-									"dependsOn": [
-										{
-											"activity": "Stored procedure",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_Excel",
-											"type": "DatasetReference",
-											"parameters": {
-												"folder": "landing",
-												"filename": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										},
-										"logStorageSettings": {
-											"linkedServiceName": {
-												"referenceName": "ls_adls_gestao_bigdata",
-												"type": "LinkedServiceReference"
-											},
-											"path": "log"
-										},
-										"enableLogging": true,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"p_banco_controle": {
-						"type": "string",
-						"defaultValue": "dbControle"
-					},
-					"p_tabela_controle": {
-						"type": "string",
-						"defaultValue": "ControleVersao"
-					},
-					"p_raw": {
-						"type": "string",
-						"defaultValue": "raw"
-					},
-					"p_trusted": {
-						"type": "string",
-						"defaultValue": "trusted"
-					},
-					"p_landing": {
-						"type": "string",
-						"defaultValue": "landing"
-					}
-				},
-				"variables": {
-					"v_ultima_data_modificada": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_Excel_Lista')]",
-				"[concat(variables('factoryId'), '/datasets/ds_sql_controle')]",
-				"[concat(variables('factoryId'), '/datasets/ds_Excel')]",
-				"[concat(variables('factoryId'), '/datasets/ds_parquet_generico')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_sql_db_azure')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gestao_bigdata')]"
 			]
 		}
 	]

@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adt-landing-pago"
 		},
+		"linkedService1_accountKey": {
+			"value": ""
+		},
 		"ls_adls_gestao_bigdata_servicePrincipalCredential": {
 			"value": ""
 		},
@@ -19,6 +22,9 @@
 		},
 		"ls_sql_db_azure_connectionString": {
 			"value": ""
+		},
+		"linkedService1_properties_typeProperties_url": {
+			"value": "https://sagestaoloja.dfs.core.windows.net"
 		},
 		"lsSnowFlake_connectionString": {
 			"value": ""
@@ -43,9 +49,6 @@
 		},
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_raw": {
 			"value": "raw"
-		},
-		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_trusted": {
-			"value": "trusted"
 		},
 		"tr_landing_properties_pl_ingerir_fechamento_parameters_p_landing": {
 			"value": "landing"
