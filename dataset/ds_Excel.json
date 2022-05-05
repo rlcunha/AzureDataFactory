@@ -2,7 +2,7 @@
 	"name": "ds_Excel",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_gestao_bigdata",
+			"referenceName": "linkedService1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
