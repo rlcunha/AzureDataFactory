@@ -2,7 +2,7 @@
 	"name": "ds_Excel_Lista",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_adls_gestao_bigdata",
+			"referenceName": "linkedService1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -20,9 +20,9 @@
 					"type": "Expression"
 				}
 			},
-			"sheetIndex": 0,
 			"range": "",
-			"firstRowAsHeader": false
+			"firstRowAsHeader": false,
+			"nullValue": "root"
 		},
 		"schema": []
 	}

@@ -341,7 +341,7 @@
 			},
 			"p_fechamento": {
 				"type": "string",
-				"defaultValue": "20210801"
+				"defaultValue": "20211101"
 			}
 		},
 		"variables": {

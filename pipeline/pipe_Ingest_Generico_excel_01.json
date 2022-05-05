@@ -28,6 +28,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					}
 				}
@@ -173,7 +174,7 @@
 									"parameters": {
 										"p_container": "raw",
 										"p_path": {
-											"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{utcnow('yyyyMMdd')}",
+											"value": "@{pipeline().parameters.tbName[1]}/dtingestion=@{pipeline().parameters.dtIngestion}",
 											"type": "Expression"
 										},
 										"p_fileName": {
@@ -213,7 +214,8 @@
 				"type": "string"
 			},
 			"dtIngestion": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "20211130"
 			}
 		},
 		"variables": {
