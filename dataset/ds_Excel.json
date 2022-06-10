@@ -32,5 +32,6 @@
 			"firstRowAsHeader": false
 		},
 		"schema": []
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

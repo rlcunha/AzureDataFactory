@@ -13,7 +13,6 @@
 					"p_banco_controle": "dbControle",
 					"p_tabela_controle": "ControleVersao",
 					"p_raw": "raw",
-					"p_trusted": "trusted",
 					"p_landing": "landing"
 				}
 			}

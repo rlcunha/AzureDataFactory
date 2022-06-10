@@ -130,7 +130,7 @@
 										"typeProperties": {
 											"variableName": "v_ultima_data_modificada",
 											"value": {
-												"value": "2021-10-08T00:00:00.000Z",
+												"value": "2021-10-08T00:00:00Z",
 												"type": "Expression"
 											}
 										}
@@ -349,6 +349,8 @@
 				"type": "String"
 			}
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2022-05-05T17:25:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

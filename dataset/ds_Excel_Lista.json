@@ -26,5 +26,6 @@
 			"nullValue": "root"
 		},
 		"schema": []
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }
